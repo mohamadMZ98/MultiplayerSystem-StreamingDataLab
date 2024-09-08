@@ -94,15 +94,53 @@ static public class AssignmentPart1
     {
         GameContent.partyCharacters.Clear();
 
-        PartyCharacter pc = new PartyCharacter(1, 10, 10, 10, 10, 10);
-        GameContent.partyCharacters.AddLast(pc);
-        pc = new PartyCharacter(2, 11, 11, 11, 11, 11);
-        GameContent.partyCharacters.AddLast(pc);
-        pc = new PartyCharacter(3, 12, 12, 12, 12, 12);
-        GameContent.partyCharacters.AddLast(pc);
+        PartyCharacter pc = new PartyCharacter();
+        string line;
+        String[] strlist;
+        try
+        {
+            using (StreamReader reader = new StreamReader("CharacterFile.txt"))
+            {
 
+                while ((line = reader.ReadLine()) != null)
+                {
+                    strlist = line.Split(' ');
+
+                    switch (int.Parse(strlist[0]))
+                    {
+                        case 0:
+                            pc = new PartyCharacter
+                            {
+                                classID = int.Parse(strlist[1]),
+                                health = int.Parse(strlist[2]),
+                                mana = int.Parse(strlist[3]),
+                                strength = int.Parse(strlist[4]),
+                                agility = int.Parse(strlist[5]),
+                                wisdom = int.Parse(strlist[6])
+                            };
+                            break;
+                        case 1:
+                            for (int i = 1; i < strlist.Length; i++)
+                            {
+                                pc.equipment.AddLast(int.Parse(strlist[i]));
+                            }
+
+                            GameContent.partyCharacters.AddLast(pc);
+                            break;
+
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //Console.WriteLine($"Error loading file: {ex.Message}");
+            Debug.Log($"Error Loading File; {ex.Message}");
+
+        }
         GameContent.RefreshUI();
     }
+
 
 }
 
