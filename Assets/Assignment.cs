@@ -156,7 +156,7 @@ static public class AssignmentPart1
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
@@ -199,12 +199,23 @@ static public class AssignmentPart2
 
     static public void GameStart()
     {
-        listOfPartyNames = new List<string>();
-        listOfPartyNames.Add("sample 1");
-        listOfPartyNames.Add("sample 2");
-        listOfPartyNames.Add("sample 3");
+        try
+        {
+            using (StreamReader reader = new StreamReader("SaveFiles.txt"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
 
-        GameContent.RefreshUI();
+                    listOfPartyNames.Add(line);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading file: {ex.Message}");
+
+        }
     }
 
     static public List<string> GetListOfPartyNames()
@@ -214,6 +225,50 @@ static public class AssignmentPart2
 
     static public void LoadPartyDropDownChanged(string selectedName)
     {
+        GameContent.partyCharacters.Clear();
+        PartyCharacter character = new PartyCharacter();
+        Debug.Log($"finding: {selectedName}");
+        string fileName = $"{selectedName}.txt";
+        if (!File.Exists(fileName)) return;
+        try
+        {
+            using (StreamReader reader = new StreamReader(fileName))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    var strlist = line.Split(' ');
+
+                    switch (int.Parse(strlist[0]))
+                    {
+                        case 0:
+                            character = new PartyCharacter
+                            {
+                                classID = int.Parse(strlist[1]),
+                                health = int.Parse(strlist[2]),
+                                mana = int.Parse(strlist[3]),
+                                strength = int.Parse(strlist[4]),
+                                agility = int.Parse(strlist[5]),
+                                wisdom = int.Parse(strlist[6])
+                            };
+                            break;
+                        case 1:
+                            for (int i = 1; i < strlist.Length; i++)
+                            {
+                                character.equipment.AddLast(int.Parse(strlist[i]));
+                            }
+                            GameContent.partyCharacters.AddLast(character);
+                            break;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading file: {ex.Message}");
+
+        }
+
         GameContent.RefreshUI();
     }
 
