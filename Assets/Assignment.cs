@@ -195,13 +195,13 @@ Good luck, journey well.
 static public class AssignmentPart2
 {
 
-    static List<string> listOfPartyNames;
+    static List<string> listOfPartyNames = new List<string>();
 
     static public void GameStart()
     {
         try
         {
-            using (StreamReader reader = new StreamReader("SaveFiles.txt"))
+            using (StreamReader reader = new StreamReader("CharacterFile.txt"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -278,7 +278,7 @@ static public class AssignmentPart2
         if (!File.Exists(fileName))
         {
             GetListOfPartyNames().Add(GameContent.GetPartyNameFromInput());
-            using (StreamWriter writer = new StreamWriter("SaveFiles.text", true))
+            using (StreamWriter writer = new StreamWriter("CharacterFile.text", true))
             {
 
                 writer.WriteLine($"{GameContent.GetPartyNameFromInput()}");
@@ -296,7 +296,7 @@ static public class AssignmentPart2
             }
         }
 
-        using (StreamWriter writer = new StreamWriter("SaveFiles.txt"))
+        using (StreamWriter writer = new StreamWriter("CharacterFile.txt"))
         {
 
             foreach (var party in GetListOfPartyNames())
@@ -315,7 +315,7 @@ static public class AssignmentPart2
         if (!File.Exists(fileName)) return;
         File.Delete(fileName);
         GetListOfPartyNames().Remove(GameContent.GetPartyNameFromInput());
-        using (StreamWriter writer = new StreamWriter("SaveFiles.txt"))
+        using (StreamWriter writer = new StreamWriter("CharacterFile.txt"))
         {
 
             foreach (var party in GetListOfPartyNames())
