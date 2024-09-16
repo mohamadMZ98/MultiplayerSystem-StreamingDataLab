@@ -274,11 +274,55 @@ static public class AssignmentPart2
 
     static public void SavePartyButtonPressed()
     {
+        string fileName = $"{GameContent.GetPartyNameFromInput()}.txt";
+        if (!File.Exists(fileName))
+        {
+            GetListOfPartyNames().Add(GameContent.GetPartyNameFromInput());
+            using (StreamWriter writer = new StreamWriter("SaveFiles.text", true))
+            {
+
+                writer.WriteLine($"{GameContent.GetPartyNameFromInput()}");
+            }
+        }
+
+        using (StreamWriter writer = new StreamWriter(fileName))
+        {
+
+            foreach (PartyCharacter character in GameContent.partyCharacters)
+            {
+
+                writer.WriteLine($"0 {character.classID} {character.health} {character.mana} {character.strength} {character.agility} {character.wisdom} {character.equipment.Count} ");
+                writer.WriteLine($"1 {string.Join(" ", character.equipment)}");
+            }
+        }
+
+        using (StreamWriter writer = new StreamWriter("SaveFiles.txt"))
+        {
+
+            foreach (var party in GetListOfPartyNames())
+            {
+                writer.WriteLine($"{party}");
+            }
+        }
+
+        
         GameContent.RefreshUI();
     }
 
     static public void DeletePartyButtonPressed()
     {
+        string fileName = $"{GameContent.GetPartyNameFromInput()}.txt";
+        if (!File.Exists(fileName)) return;
+        File.Delete(fileName);
+        GetListOfPartyNames().Remove(GameContent.GetPartyNameFromInput());
+        using (StreamWriter writer = new StreamWriter("SaveFiles.txt"))
+        {
+
+            foreach (var party in GetListOfPartyNames())
+            {
+                writer.WriteLine($"{party}");
+            }
+        }
         GameContent.RefreshUI();
     }
 
